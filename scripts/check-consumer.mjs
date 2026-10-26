@@ -32,7 +32,8 @@ const run = (args, cwd = app) => {
     throw e;
   }
 };
-await cp(join(repo, "examples/basic"), app, {
+const example = process.env.OX_HONO_EXAMPLE ?? "basic";
+await cp(join(repo, "examples", example), app, {
   recursive: true,
   filter: (p) => !p.includes("/node_modules") && !p.includes("/dist"),
 });
@@ -95,7 +96,70 @@ execFileSync(
   ],
   { cwd: app, stdio: "inherit" },
 );
+if (example === "basic") {
+  await writeFile(
+    join(app, "src/existing.ts"),
+    "globalThis.existingApplicationEntry = true;",
+  );
+  const configFile = join(app, "vite.config.ts");
+  const source = await readFile(configFile, "utf8");
+  await writeFile(
+    configFile,
+    source.replace(
+      "defineConfig({",
+      'defineConfig({build:{rollupOptions:{input:{"ox-content-hono":"src/existing.ts"}}},',
+    ),
+  );
+}
 run(["run", "build"]); // A cold ordinary build, before any dev server or compilation.
+if (example === "basic") {
+  const manifest = JSON.parse(
+    await readFile(join(app, "dist/.vite/manifest.json"), "utf8"),
+  );
+  assert.ok(
+    manifest["src/existing.ts"],
+    "Preserve even a colliding existing entry name",
+  );
+}
+if (example === "basic") {
+  await writeFile(
+    join(app, "src/Standalone.tsx"),
+    `import {Hono} from 'hono';
+import Page from '../content/index.mdx';
+import Footer from '../snippets/footer.md';
+const app = new Hono();
+app.get('/', c => c.html(<main><Page/><Footer/></main>));
+export default app;`,
+  );
+  await writeFile(
+    join(app, "standalone.config.ts"),
+    `import {defineConfig} from 'vite';
+import {oxContentHono} from '@ts-76/ox-content-hono-jsx/vite';
+export default defineConfig({plugins: [oxContentHono({routes:false, frontmatter: ({title}) => ({title})})], build:{ssr:'src/Standalone.tsx',outDir:'server'}});`,
+  );
+  run(["exec", "--", "vite", "build", "--config", "standalone.config.ts"]);
+  const bundleSource = await readFile(
+    join(app, "server/Standalone.js"),
+    "utf8",
+  );
+  assert.doesNotMatch(
+    bundleSource,
+    /@ox-content\/vite-plugin|@ox-content\/napi|node:module/,
+  );
+  const rendered = execFileSync(
+    process.execPath,
+    [
+      "--input-type=module",
+      "-e",
+      `const {default: app}=await import('./server/Standalone.js');console.log(await (await app.request('/')).text());`,
+    ],
+    { cwd: app, encoding: "utf8" },
+  );
+  assert.match(rendered, /Count: 2/);
+  assert.match(rendered, /Shared frontmatter/);
+  assert.match(rendered, /Imported Markdown/);
+  console.log("Independent Hono SSR build passed");
+}
 const evidence = {
   root,
   packed: true,
@@ -141,6 +205,7 @@ async function withServer(mode, check) {
       if (child.exitCode !== null) throw Error(logs);
       return (await fetch(origin)).status === 200;
     }, "server " + mode);
+    console.log("Checking", mode, origin);
     await check(origin);
   } catch (e) {
     console.error(logs);
@@ -172,14 +237,18 @@ const cssPath = join(app, "content/counter.css");
 const cssSource = await readFile(cssPath, "utf8");
 try {
   evidence.lifecycle = await checkClientLifecycle({ app, browser });
+  console.log("Client lifecycle passed");
   for (const mode of ["dev", "preview"])
     await withServer(mode, async (origin) => {
       const errors = [];
       const page = await browser.newPage();
-      page.on("pageerror", (e) => errors.push(e.message));
+      page.on("pageerror", (e) => {
+        errors.push(e.message);
+        console.error("Browser:", e.message);
+      });
       const html = await (await fetch(origin)).text();
       assert.match(html, /Count: 2/);
-      assert.match(html, /Shared frontmatter/);
+      assert.match(html, /data-title="true">Shared frontmatter<\/p>/);
       assert.doesNotMatch(html, /never sent to client/);
       const nojs = await browser.newContext({ javaScriptEnabled: false });
       const staticPage = await nojs.newPage();
@@ -194,6 +263,13 @@ try {
           .evaluate((el) => getComputedStyle(el).borderTopWidth),
         "3px",
       );
+      if (example === "basic")
+        assert.equal(
+          await staticPage
+            .locator("[data-imported]")
+            .evaluate((el) => getComputedStyle(el).borderTopWidth),
+          "5px",
+        );
       await nojs.close();
       await page.goto(origin);
       await page.waitForFunction(() => window.mounts === 1);
@@ -210,7 +286,46 @@ try {
         await page.locator("[data-slot] strong").textContent(),
         "bold",
       );
+      if (example === "basic") {
+        assert.match(
+          await page.locator("[data-imported]").textContent(),
+          /Imported Markdown/,
+        );
+        assert.deepEqual(
+          JSON.parse(await page.locator("[data-yaml]").textContent()),
+          { tags: ["one", "two"], nested: { value: "three" } },
+        );
+        await page
+          .locator('[data-ox-island="Badge"][data-ox-hydrated="true"]')
+          .waitFor();
+        await page.locator("[data-badge]").click();
+        await until(
+          async () =>
+            (await page.locator("[data-badge]").textContent()) ===
+            "Imported MDX: 1",
+          "imported named MDX component state",
+        );
+      }
       if (mode === "dev") {
+        if (example === "basic") {
+          const footer = join(app, "snippets/footer.md");
+          const footerSource = await readFile(footer, "utf8");
+          await writeFile(
+            footer,
+            footerSource.replace(
+              "Imported Markdown",
+              "Updated imported Markdown",
+            ),
+          );
+          await until(
+            async () =>
+              /Updated imported Markdown/.test(
+                await page.locator("[data-imported]").textContent(),
+              ),
+            "imported Markdown HMR",
+          );
+          await writeFile(footer, footerSource);
+        }
         await writeFile(
           sourcePath,
           original.replace("Shared frontmatter", "Changed frontmatter"),
@@ -252,11 +367,31 @@ try {
       const plainResponse = await fetch(origin + "/plain/");
       assert.equal(plainResponse.status, 200);
       const plain = await plainResponse.text();
-      if (mode === "preview") assert.doesNotMatch(plain, /<script\b/);
-      await page.goto(origin + "/plain/");
-      assert.match(await page.locator("h1").textContent(), /Plain Markdown/);
-      assert.deepEqual(errors, []);
+      if (mode === "preview" && example === "custom-host")
+        assert.doesNotMatch(plain, /<script\b/);
       await page.close();
+      const plainPage = await browser.newPage();
+      plainPage.on("pageerror", (e) => errors.push(e.message));
+      await plainPage.goto(origin + "/plain/");
+      assert.match(
+        await plainPage.locator("main h1").textContent(),
+        /Plain Markdown/,
+      );
+      if (example === "basic") {
+        await plainPage
+          .locator('[data-ox-island="Badge"][data-ox-hydrated="true"]')
+          .waitFor();
+        await plainPage.locator("[data-badge]").click();
+        await until(
+          async () =>
+            /Imported MDX: 1/.test(
+              await plainPage.locator("[data-badge]").textContent(),
+            ),
+          "layout island on plain page",
+        );
+      }
+      await plainPage.close();
+      assert.deepEqual(errors, []);
       evidence.modes.push({
         mode,
         ssr: true,
@@ -269,6 +404,7 @@ try {
         ...(mode === "dev"
           ? {
               hmr: [
+                ...(example === "basic" ? ["imported Markdown"] : []),
                 "frontmatter",
                 "CSS",
                 "component",
@@ -276,9 +412,40 @@ try {
                 "route remove",
               ],
             }
-          : { plainPageZeroScripts: true }),
+          : { plainPageZeroScripts: example === "custom-host" }),
       });
     });
+  if (example === "basic") {
+    await writeFile(sourcePath, original);
+    await writeFile(counterPath, counterSource);
+    await writeFile(cssPath, cssSource);
+    const configFile = join(app, "vite.config.ts");
+    const configured = await readFile(configFile, "utf8");
+    await writeFile(
+      configFile,
+      configured.replace(/layout: ["']\.\/src\/Layout\.tsx["'],?/, ""),
+    );
+    run(["run", "build"]);
+    await withServer("preview", async (origin) => {
+      const plain = await (await fetch(origin + "/plain/")).text();
+      assert.doesNotMatch(plain, /<script\b/);
+      const page = await browser.newPage();
+      await page.goto(origin);
+      await page.waitForFunction(() => window.mounts === 1);
+      await page.locator("[data-counter]").click();
+      await page.waitForFunction(
+        () =>
+          document.querySelector("[data-counter]").textContent === "Count: 3",
+      );
+      await page.close();
+    });
+    evidence.defaultLayout = {
+      build: true,
+      preview: true,
+      clientState: true,
+      plainPageZeroScripts: true,
+    };
+  }
 } finally {
   await browser.close();
   await writeFile(sourcePath, original);
@@ -287,7 +454,7 @@ try {
 }
 await mkdir(join(repo, "artifacts"), { recursive: true });
 await writeFile(
-  join(repo, "artifacts/consumer.json"),
+  join(repo, `artifacts/consumer-${example}.json`),
   JSON.stringify(evidence, null, 2),
 );
 console.log(JSON.stringify(evidence, null, 2));

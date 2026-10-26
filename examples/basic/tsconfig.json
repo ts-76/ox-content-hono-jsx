@@ -10,5 +10,5 @@
     "jsxImportSource": "hono/jsx",
     "types": ["vite/client", "node"]
   },
-  "include": ["src", "content", "vite.config.ts"]
+  "include": ["src", "content", "snippets", "vite.config.ts"]
 }

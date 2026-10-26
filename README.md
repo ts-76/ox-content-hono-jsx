@@ -32,7 +32,112 @@ npm install /path/to/ts-76-ox-content-hono-jsx-0.1.0.tgz hono
 npm install -D @ox-content/vite-plugin@3.4.0 vite@8.3.4
 ```
 
-## 接続する
+## 基本の使い方
+
+通常のコンテンツサイトでは `oxContentHono()` を追加します。
+ルート、HTML host、JSX、部品 registry、client entry、ビルド入力、CSS の接続をまとめて設定します。
+アプリ側に host / client ファイルを作る必要はありません。
+
+```ts
+// vite.config.ts
+import { defineConfig } from "vite";
+import { oxContentHono } from "@ts-76/ox-content-hono-jsx/vite";
+
+export default defineConfig({
+  plugins: [
+    oxContentHono({
+      oxContent: { srcDir: "content" },
+      frontmatter: ({ title }) => ({ title: title ?? "" }),
+    }),
+  ],
+});
+```
+
+`content/index.mdx` は `/`、`content/guide.md` は `/guide/` になります。
+パスの決定や文書の検出は Ox Content の collection API に従います。
+通常の `vite` / `vite build` / `vite preview` で動きます。
+既存のビルド入力は追加した仮想 client entry と併せて維持します。
+
+既定ではハイライト、resources、docs、検索、feeds、siteMaps を無効にしています。
+対応する機能を使う場合は `oxContent` に明示して設定してください。
+`honoJsx()` を追加で併用する必要はありません。
+
+### Markdown を Hono コンポーネントとして import
+
+`.md` / `.markdown` / `.mdx` の default export は Hono の非同期サーバーコンポーネントです。
+`frontmatter` と `toc` も named export で取得できます。
+frontmatter は Ox Content のパーサーを使うため、配列・ネストした YAML も維持します。
+
+```tsx
+/// <reference types="@ts-76/ox-content-hono-jsx/virtual" />
+import Page, { frontmatter } from "../content/page.mdx";
+
+app.get("/page", (c) =>
+  c.html(
+    <article>
+      <h1>{String(frontmatter.title)}</h1>
+      <Page />
+    </article>,
+  ),
+);
+```
+
+生成モジュールには Vite や Markdown コンパイラーを含めません。
+ブラウザー entry からの import はエラーになります。ブラウザーには文書内の island だけを配信します。
+文書内の部品 import は Ox Content の content root 制限に従います。
+`.md?raw` など、Vite の query 付き読み込みは変換対象外です。
+
+既存アプリがルーティングとアセット配信を担当する場合は `routes: false` を指定します。
+この場合は自動ルートもビルド入力の追加も行わず、既存アプリの構成を保ちます。
+部品を起動するアプリの browser entry で `import "virtual:ox-content-hono/client"` を使ってください。
+文書の検出対象は content collection、layout の静的 import、SSR 変換済みの文書です。
+独自の複数段ビルドで content 外の文書を追加する場合は、低レベル registry API で対象を明示できます。
+CSS のリンクと client bundle の配信は、そのアプリの Vite アセット処理に従います。
+
+### Hono の document layout
+
+`layout` に Hono コンポーネントの module path を指定できます。
+`children` は描画済み本文、`head` は CSS / script タグです。両方を出力してください。
+加えて `frontmatter` と `path` を受け取れます。
+
+```ts
+oxContentHono({
+  layout: "./src/Layout.tsx",
+  oxContent: { srcDir: "content" },
+});
+```
+
+```tsx
+import type { Child } from "hono/jsx";
+import Footer from "./footer.md";
+
+export default function Layout({
+  children,
+  head,
+}: {
+  children: Child;
+  head: Child;
+}) {
+  return (
+    <html>
+      <head>{head}</head>
+      <body>
+        <main>{children}</main>
+        <Footer />
+      </body>
+    </html>
+  );
+}
+```
+
+layout の静的 import から文書を検出し、文書内の部品も browser registry に含めます。
+動的に組み立てた import path や `import.meta.glob` の解析は行いません。
+完成例は [examples/basic](examples/basic) にあります。
+
+## 独自 HTML host への接続
+
+既存の低レベル API も引き続き使えます。
+[examples/custom-host](examples/custom-host) は元の接続方法を維持した例です。
 
 ### Vite
 
@@ -70,7 +175,7 @@ export default defineConfig({
 
 custom host の `ctx.markdown.render()` 内で接続します。
 ルーティング、公開対象の選択、ページ全体のレイアウトは引き続きホストが担当します。
-完成した例は [examples/basic/src/host.ts](examples/basic/src/host.ts) を参照してください。
+完成した例は [examples/custom-host/src/host.ts](examples/custom-host/src/host.ts) を参照してください。
 
 ```ts
 import { renderHonoMarkdown } from "@ts-76/ox-content-hono-jsx/vite";
@@ -154,13 +259,13 @@ export default function Counter({ initial = 0 }) {
 
 ## API と依存境界
 
-| エントリー     | 役割                                                                          |
-| -------------- | ----------------------------------------------------------------------------- |
-| パッケージ直下 | `FrontmatterContext` / `useFrontmatter()`                                     |
-| `/server`      | `createHonoServerAdapter()`。Ox Content に渡す SSR callback                   |
-| `/client`      | `createHonoHydrate()` / `initHonoIslands()`。起動と破棄                       |
-| `/vite`        | `honoJsx()` / `createHonoRenderer()` / `renderHonoMarkdown()`。ビルド時の接続 |
-| `/virtual`     | 仮想 module registry の型宣言                                                 |
+| エントリー     | 役割                                                            |
+| -------------- | --------------------------------------------------------------- |
+| パッケージ直下 | `FrontmatterContext` / `useFrontmatter()`                       |
+| `/server`      | `createHonoServerAdapter()`。Ox Content に渡す SSR callback     |
+| `/client`      | `createHonoHydrate()` / `initHonoIslands()`。起動と破棄         |
+| `/vite`        | `oxContentHono()` と既存 `honoJsx()` / renderer。ビルド時の接続 |
+| `/virtual`     | 仮想 module registry の型宣言                                   |
 
 通常依存は `@ox-content/islands` だけです。Hono は peer dependency、Vite と
 `@ox-content/vite-plugin` は `/vite` を使うホストの build dependency です。
@@ -187,12 +292,14 @@ export default function Counter({ initial = 0 }) {
 npm test
 npx playwright install chromium
 npm run test:consumer
+OX_HONO_EXAMPLE=custom-host npm run test:consumer
 ```
 
 テストは tarball を新しいアプリへインストールして型検査し、通常の build / dev / preview を実行します。
 SSR、JavaScript 無効、CSS、props / slot / frontmatter、部品状態更新、各起動条件、破棄・キャンセル、
 エラー時の SSR 保持、HMR（本文・CSS・部品・ルート追加削除）を確認します。
-CI は Node 24 の1ジョブで同じ検証を実行する構成です。
+通常の Hono SSR build で import した MDX / Markdown が描画できることも確認します。
+CI は Node 24 の1ジョブで両サンプルを検証する構成です。
 
 ## ライセンス
 
