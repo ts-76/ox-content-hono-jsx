@@ -1,0 +1,67 @@
+{
+  "name": "@ts-76/ox-content-hono-jsx",
+  "version": "0.1.0",
+  "description": "Independent Hono JSX adapters for Ox Content HTML hosts",
+  "license": "MIT",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/context.d.ts",
+      "default": "./dist/context.js"
+    },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "default": "./dist/server.js"
+    },
+    "./client": {
+      "types": "./dist/client.d.ts",
+      "default": "./dist/client.js"
+    },
+    "./vite": {
+      "types": "./dist/vite.d.ts",
+      "default": "./dist/vite.js"
+    },
+    "./virtual": "./dist/virtual.d.ts"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node scripts/copy-types.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "npm run build && node --test test/*.test.mjs",
+    "test:consumer": "node scripts/check-consumer.mjs"
+  },
+  "dependencies": {
+    "@ox-content/islands": "^3.4.0"
+  },
+  "devDependencies": {
+    "@ox-content/napi": "3.4.0",
+    "@ox-content/vite-plugin": "3.4.0",
+    "@types/node": "^24.0.0",
+    "esbuild": "^0.28.2",
+    "hono": "4.13.13",
+    "playwright": "1.64.0",
+    "typescript": "^7.0.2",
+    "vite": "8.3.4"
+  },
+  "peerDependencies": {
+    "@ox-content/vite-plugin": ">=3.4.0 <4",
+    "hono": ">=4.13.13 <5",
+    "vite": "^8.3.4"
+  },
+  "peerDependenciesMeta": {
+    "@ox-content/vite-plugin": {
+      "optional": true
+    },
+    "vite": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": ">=22.22.2"
+  }
+}
