@@ -52,6 +52,59 @@ const manifest = JSON.parse(await readFile(join(app, "package.json"), "utf8"));
 manifest.dependencies["@ts-76/ox-content-hono-jsx"] = packageSource;
 await writeFile(join(app, "package.json"), JSON.stringify(manifest, null, 2));
 console.log("Consumer:", app);
+// Runtime-only consumers must type-check without installing the Vite compiler.
+const runtimeApp = join(root, "runtime");
+await mkdir(runtimeApp);
+await writeFile(
+  join(runtimeApp, "package.json"),
+  JSON.stringify({
+    private: true,
+    type: "module",
+    dependencies: {
+      "@ts-76/ox-content-hono-jsx": packageSource,
+      hono: "4.13.13",
+    },
+  }),
+);
+run(
+  ["install", "--ignore-scripts", "--omit=peer", "--no-audit", "--no-fund"],
+  runtimeApp,
+);
+await writeFile(
+  join(runtimeApp, "check.ts"),
+  `import {createHonoServerAdapter} from '@ts-76/ox-content-hono-jsx/server';
+import {initHonoIslands} from '@ts-76/ox-content-hono-jsx/client';
+createHonoServerAdapter(); void initHonoIslands;`,
+);
+execFileSync(
+  process.execPath,
+  [
+    join(repo, "node_modules/typescript/bin/tsc"),
+    "--noEmit",
+    "--strict",
+    "--target",
+    "ES2022",
+    "--module",
+    "NodeNext",
+    "--moduleResolution",
+    "NodeNext",
+    "check.ts",
+  ],
+  { cwd: runtimeApp, stdio: "inherit" },
+);
+assert.equal(
+  await readFile(
+    join(runtimeApp, "node_modules/@ox-content/vite-plugin/package.json"),
+    "utf8",
+  ).catch(() => null),
+  null,
+);
+const runtimeAudit = JSON.parse(
+  run(["audit", "--omit=dev", "--json"], runtimeApp),
+);
+assert.equal(runtimeAudit.metadata.vulnerabilities.total, 0);
+console.log("Runtime-only types and dependency audit passed");
+
 run(["install", "--ignore-scripts", "--omit=peer", "--no-audit", "--no-fund"]);
 const installed = JSON.parse(
   await readFile(

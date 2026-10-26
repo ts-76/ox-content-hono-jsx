@@ -1,8 +1,18 @@
 import { Fragment, jsx } from "hono/jsx";
 import { raw } from "hono/html";
-import type { HtmlHostFrameworkAdapter } from "@ox-content/vite-plugin/html-host";
 import { FrontmatterContext, type Frontmatter } from "./context.js";
 import { componentProps, islandContext } from "./shared.js";
+
+/** Structural HTML-host connection without a compiler dependency in runtime types. */
+export interface HonoServerAdapter {
+  frameworkName: string;
+  renderComponent(
+    component: unknown,
+    props: Record<string, unknown>,
+    slotHtml: string | undefined,
+    context: { component: string; moduleId: string; documentPath: string },
+  ): Promise<string>;
+}
 
 export interface HonoServerOptions {
   /** JSON data intentionally exposed to each island; defaults to no metadata. */
@@ -12,7 +22,7 @@ export interface HonoServerOptions {
 /** A renderer callback only. No filesystem, Vite or Markdown engine at runtime. */
 export function createHonoServerAdapter(
   options: HonoServerOptions = {},
-): HtmlHostFrameworkAdapter {
+): HonoServerAdapter {
   // Round-trip once so server values match the browser's JSON values (e.g. dates).
   const json = JSON.stringify(options.frontmatter ?? {});
   const frontmatter: Frontmatter = JSON.parse(json);

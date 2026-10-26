@@ -26,7 +26,27 @@ const subject = {
   name: npa.toPurl(npa.resolve(pkg.name, pkg.version)),
   digest: { sha512: createHash("sha512").update(bytes).digest("hex") },
 };
-const bundle = await generateProvenance([subject], {});
+// A transparency-log request can succeed while the response is lost; the
+// client then receives 409 for its retry. Start a fresh key/certificate only for
+// that exact transient failure. Every resulting bundle still must verify.
+let bundle;
+for (let attempt = 1; attempt <= 3; attempt++) {
+  try {
+    bundle = await generateProvenance([subject], {});
+    break;
+  } catch (error) {
+    if (
+      attempt === 3 ||
+      error.code !== "TLOG_CREATE_ENTRY_ERROR" ||
+      error.cause?.statusCode !== 409
+    )
+      throw error;
+    console.log(
+      `Transparency log returned 409; retrying with fresh signing material (${attempt}/3).`,
+    );
+  }
+}
+assert.ok(bundle);
 const file = archive + ".sigstore";
 writeFileSync(file, JSON.stringify(bundle));
 await verifyProvenance(subject, file);

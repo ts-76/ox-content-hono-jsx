@@ -4,11 +4,9 @@ import {
   createHtmlHostLazyHydrate,
   type CreateHtmlHostLazyHydrateInput,
 } from "@ox-content/islands/html-host";
-import {
-  initIslands,
-  type InitIslandsOptions,
-  type IslandController,
-} from "@ox-content/islands";
+import { initIslands } from "@ox-content/islands/runtime";
+type InitIslandsOptions = NonNullable<Parameters<typeof initIslands>[1]>;
+type IslandController = ReturnType<typeof initIslands>;
 import { FrontmatterContext, type Frontmatter } from "./context.js";
 import { componentProps, type IslandContext } from "./shared.js";
 
