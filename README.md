@@ -4,12 +4,20 @@ Ox Content の HTML host API を Hono JSX に接続する独立パッケージ�
 Markdown / MDX の変換・部品の検出・仮想モジュール・CSS の収集・HMR は Ox Content に任せ、
 このパッケージは Hono JSX の SSR と `hono/jsx/dom` での部品起動・破棄を担当します。
 
-現在は **0.1.0 のローカル実装候補**です。npm への公開はまだ行っていません。
+Ox Content とは独立した、非公式の Hono JSX アダプターです。
 Ox Content 3.4.0 / Hono 4.13.13 / Vite 8.3.4 を対象にしています。
 
-## 動かす
+## インストール
 
-このリポジトリでパッケージを準備し、サンプルを起動します。
+```sh
+npm install @ts-76/ox-content-hono-jsx hono
+npm install -D @ox-content/vite-plugin@3.4.0 vite@8.3.4
+```
+
+アプリの通常操作は `npm run dev` / `npm run build` / `npm run preview` です。
+アプリ側の手動 Markdown compile や生成ファイルの管理は不要です。
+
+リポジトリのサンプルを動かす場合は、先にローカルパッケージをビルドします。
 
 ```sh
 npm ci --ignore-scripts --omit=peer
@@ -17,19 +25,6 @@ npm run build
 cd examples/basic
 npm install --ignore-scripts --omit=peer
 npm run dev
-```
-
-アプリの通常操作は `npm run dev` / `npm run build` / `npm run preview` です。
-アプリ側の手動 Markdown compile や生成ファイルの管理は不要です。
-既存アプリへの導入には `npm pack` の tarball を使えます。
-
-```sh
-# パッケージ側
-npm run build
-npm pack
-# アプリ側: 実際に生成された tarball のパスを指定
-npm install /path/to/ts-76-ox-content-hono-jsx-0.1.0.tgz hono
-npm install -D @ox-content/vite-plugin@3.4.0 vite@8.3.4
 ```
 
 ## 基本の使い方
@@ -285,6 +280,20 @@ export default function Counter({ initial = 0 }) {
   必要な非同期データはホストで取得して props に渡します。
 - CSS import と静的 Markdown slot を対象とします。Hono の head 自動収集、`hono/css`、
   slot 内の多重フレームワーク island、HonoX / Void 専用フックは未検証です。
+
+## 上流のビルド用依存の監査
+
+Ox Content 3.4.0 の依存ツリーには、fflate の ZIP64 展開と KaTeX の既存 prototype pollution を前提とした勧告が残ります。
+現在の監査表示は伝播分を含め Moderate 3 / Low 2 です。上流が固定している依存のため、override で差し替えていません。
+Satori が使う fflate の API は `inflateSync` で、今回の勧告の対象である `unzipSync` ではありません。
+KaTeX の問題は別の prototype pollution と組み合わさる条件があります。
+ビルド設定・Markdown・部品は信頼できる入力として扱い、CMS の未検証本文を処理する用途には使わないでください。
+
+これらは本パッケージの通常依存ではなく、Vite 用 peer dependency を導入する開発・ビルド環境の依存です。
+検証では SSR / browser bundle に Markdown compiler を含めない境界も確認します。
+この説明は依存監査がゼロであることを意味しません。既知の勧告は
+[fflate](https://github.com/advisories/GHSA-px8p-9vwx-vf98) /
+[KaTeX](https://github.com/advisories/GHSA-238p-pmpm-9mq7) を参照してください。
 
 ## 開発・検証
 

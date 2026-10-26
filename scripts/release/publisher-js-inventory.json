@@ -1,0 +1,582 @@
+[
+  {
+    "name": "@gar/promise-retry",
+    "version": "1.0.3"
+  },
+  {
+    "name": "@isaacs/fs-minipass",
+    "version": "4.0.1"
+  },
+  {
+    "name": "@isaacs/string-locale-compare",
+    "version": "1.1.0"
+  },
+  {
+    "name": "@npmcli/agent",
+    "version": "4.0.2"
+  },
+  {
+    "name": "@npmcli/arborist",
+    "version": "9.9.3"
+  },
+  {
+    "name": "@npmcli/config",
+    "version": "10.14.0"
+  },
+  {
+    "name": "@npmcli/fs",
+    "version": "5.0.0"
+  },
+  {
+    "name": "@npmcli/git",
+    "version": "7.0.2"
+  },
+  {
+    "name": "@npmcli/installed-package-contents",
+    "version": "4.0.0"
+  },
+  {
+    "name": "@npmcli/map-workspaces",
+    "version": "5.0.3"
+  },
+  {
+    "name": "@npmcli/metavuln-calculator",
+    "version": "9.0.3"
+  },
+  {
+    "name": "@npmcli/name-from-folder",
+    "version": "4.0.0"
+  },
+  {
+    "name": "@npmcli/node-gyp",
+    "version": "5.0.0"
+  },
+  {
+    "name": "@npmcli/package-json",
+    "version": "7.0.5"
+  },
+  {
+    "name": "@npmcli/promise-spawn",
+    "version": "9.0.1"
+  },
+  {
+    "name": "@npmcli/query",
+    "version": "5.0.0"
+  },
+  {
+    "name": "@npmcli/redact",
+    "version": "4.0.0"
+  },
+  {
+    "name": "@npmcli/run-script",
+    "version": "10.0.4"
+  },
+  {
+    "name": "@sigstore/bundle",
+    "version": "4.0.0"
+  },
+  {
+    "name": "@sigstore/core",
+    "version": "3.2.1"
+  },
+  {
+    "name": "@sigstore/protobuf-specs",
+    "version": "0.5.2"
+  },
+  {
+    "name": "@sigstore/sign",
+    "version": "4.1.1"
+  },
+  {
+    "name": "@sigstore/tuf",
+    "version": "4.0.2"
+  },
+  {
+    "name": "@sigstore/verify",
+    "version": "3.1.1"
+  },
+  {
+    "name": "@tufjs/canonical-json",
+    "version": "2.0.0"
+  },
+  {
+    "name": "@tufjs/models",
+    "version": "4.1.0"
+  },
+  {
+    "name": "abbrev",
+    "version": "4.0.0"
+  },
+  {
+    "name": "agent-base",
+    "version": "7.1.4"
+  },
+  {
+    "name": "aproba",
+    "version": "2.1.0"
+  },
+  {
+    "name": "archy",
+    "version": "1.0.0"
+  },
+  {
+    "name": "balanced-match",
+    "version": "4.0.4"
+  },
+  {
+    "name": "bin-links",
+    "version": "6.0.2"
+  },
+  {
+    "name": "binary-extensions",
+    "version": "3.2.0"
+  },
+  {
+    "name": "brace-expansion",
+    "version": "5.0.12"
+  },
+  {
+    "name": "cacache",
+    "version": "20.0.4"
+  },
+  {
+    "name": "chalk",
+    "version": "5.6.2"
+  },
+  {
+    "name": "chownr",
+    "version": "3.0.0"
+  },
+  {
+    "name": "ci-info",
+    "version": "4.4.0"
+  },
+  {
+    "name": "cidr-regex",
+    "version": "5.0.5"
+  },
+  {
+    "name": "cmd-shim",
+    "version": "8.0.0"
+  },
+  {
+    "name": "common-ancestor-path",
+    "version": "2.0.0"
+  },
+  {
+    "name": "content-type",
+    "version": "2.1.0"
+  },
+  {
+    "name": "cssesc",
+    "version": "3.0.0"
+  },
+  {
+    "name": "debug",
+    "version": "4.4.3"
+  },
+  {
+    "name": "diff",
+    "version": "8.0.4"
+  },
+  {
+    "name": "env-paths",
+    "version": "2.2.1"
+  },
+  {
+    "name": "exponential-backoff",
+    "version": "3.1.3"
+  },
+  {
+    "name": "fastest-levenshtein",
+    "version": "1.0.16"
+  },
+  {
+    "name": "fdir",
+    "version": "6.5.0"
+  },
+  {
+    "name": "fs-minipass",
+    "version": "3.0.3"
+  },
+  {
+    "name": "glob",
+    "version": "13.0.6"
+  },
+  {
+    "name": "graceful-fs",
+    "version": "4.2.11"
+  },
+  {
+    "name": "hosted-git-info",
+    "version": "9.0.3"
+  },
+  {
+    "name": "http-cache-semantics",
+    "version": "4.3.0"
+  },
+  {
+    "name": "http-proxy-agent",
+    "version": "7.0.2"
+  },
+  {
+    "name": "https-proxy-agent",
+    "version": "7.0.6"
+  },
+  {
+    "name": "iconv-lite",
+    "version": "0.7.3"
+  },
+  {
+    "name": "ignore-walk",
+    "version": "8.0.0"
+  },
+  {
+    "name": "ini",
+    "version": "6.0.0"
+  },
+  {
+    "name": "init-package-json",
+    "version": "8.2.5"
+  },
+  {
+    "name": "ip-address",
+    "version": "10.7.4"
+  },
+  {
+    "name": "is-cidr",
+    "version": "6.0.4"
+  },
+  {
+    "name": "isexe",
+    "version": "4.0.0"
+  },
+  {
+    "name": "json-parse-even-better-errors",
+    "version": "5.0.0"
+  },
+  {
+    "name": "json-stringify-nice",
+    "version": "1.1.4"
+  },
+  {
+    "name": "jsonparse",
+    "version": "1.3.1"
+  },
+  {
+    "name": "just-diff",
+    "version": "6.0.2"
+  },
+  {
+    "name": "just-diff-apply",
+    "version": "5.5.0"
+  },
+  {
+    "name": "libnpmaccess",
+    "version": "10.0.3"
+  },
+  {
+    "name": "libnpmdiff",
+    "version": "8.1.14"
+  },
+  {
+    "name": "libnpmexec",
+    "version": "10.3.4"
+  },
+  {
+    "name": "libnpmfund",
+    "version": "7.0.28"
+  },
+  {
+    "name": "libnpmorg",
+    "version": "8.0.1"
+  },
+  {
+    "name": "libnpmpack",
+    "version": "9.1.15"
+  },
+  {
+    "name": "libnpmpublish",
+    "version": "11.2.1"
+  },
+  {
+    "name": "libnpmsearch",
+    "version": "9.0.1"
+  },
+  {
+    "name": "libnpmteam",
+    "version": "8.0.2"
+  },
+  {
+    "name": "libnpmversion",
+    "version": "8.0.4"
+  },
+  {
+    "name": "lru-cache",
+    "version": "11.5.3"
+  },
+  {
+    "name": "make-fetch-happen",
+    "version": "15.0.6"
+  },
+  {
+    "name": "minimatch",
+    "version": "10.2.6"
+  },
+  {
+    "name": "minipass",
+    "version": "3.3.6"
+  },
+  {
+    "name": "minipass",
+    "version": "7.1.3"
+  },
+  {
+    "name": "minipass-collect",
+    "version": "2.0.1"
+  },
+  {
+    "name": "minipass-fetch",
+    "version": "5.0.2"
+  },
+  {
+    "name": "minipass-flush",
+    "version": "1.0.7"
+  },
+  {
+    "name": "minipass-pipeline",
+    "version": "1.2.4"
+  },
+  {
+    "name": "minipass-sized",
+    "version": "2.0.0"
+  },
+  {
+    "name": "minizlib",
+    "version": "3.1.0"
+  },
+  {
+    "name": "ms",
+    "version": "2.1.3"
+  },
+  {
+    "name": "mute-stream",
+    "version": "3.0.0"
+  },
+  {
+    "name": "negotiator",
+    "version": "1.1.0"
+  },
+  {
+    "name": "node-gyp",
+    "version": "12.4.0"
+  },
+  {
+    "name": "nopt",
+    "version": "9.0.0"
+  },
+  {
+    "name": "npm",
+    "version": "11.21.1"
+  },
+  {
+    "name": "npm-audit-report",
+    "version": "7.0.0"
+  },
+  {
+    "name": "npm-bundled",
+    "version": "5.0.0"
+  },
+  {
+    "name": "npm-install-checks",
+    "version": "8.0.0"
+  },
+  {
+    "name": "npm-normalize-package-bin",
+    "version": "5.0.0"
+  },
+  {
+    "name": "npm-package-arg",
+    "version": "13.0.2"
+  },
+  {
+    "name": "npm-packlist",
+    "version": "10.0.4"
+  },
+  {
+    "name": "npm-pick-manifest",
+    "version": "11.0.3"
+  },
+  {
+    "name": "npm-profile",
+    "version": "12.0.2"
+  },
+  {
+    "name": "npm-registry-fetch",
+    "version": "19.1.1"
+  },
+  {
+    "name": "npm-user-validate",
+    "version": "4.0.0"
+  },
+  {
+    "name": "p-map",
+    "version": "7.1.1"
+  },
+  {
+    "name": "pacote",
+    "version": "21.5.1"
+  },
+  {
+    "name": "parse-conflict-json",
+    "version": "5.0.1"
+  },
+  {
+    "name": "path-scurry",
+    "version": "2.0.2"
+  },
+  {
+    "name": "picomatch",
+    "version": "4.0.7"
+  },
+  {
+    "name": "postcss-selector-parser",
+    "version": "7.1.7"
+  },
+  {
+    "name": "proc-log",
+    "version": "6.1.0"
+  },
+  {
+    "name": "proggy",
+    "version": "4.0.0"
+  },
+  {
+    "name": "promise-all-reject-late",
+    "version": "1.0.1"
+  },
+  {
+    "name": "promise-call-limit",
+    "version": "3.0.2"
+  },
+  {
+    "name": "promzard",
+    "version": "3.0.1"
+  },
+  {
+    "name": "qrcode-terminal",
+    "version": "0.12.0"
+  },
+  {
+    "name": "read",
+    "version": "5.0.1"
+  },
+  {
+    "name": "read-cmd-shim",
+    "version": "6.0.0"
+  },
+  {
+    "name": "safer-buffer",
+    "version": "2.1.2"
+  },
+  {
+    "name": "semver",
+    "version": "7.8.5"
+  },
+  {
+    "name": "signal-exit",
+    "version": "4.1.0"
+  },
+  {
+    "name": "sigstore",
+    "version": "4.1.1"
+  },
+  {
+    "name": "smart-buffer",
+    "version": "4.2.0"
+  },
+  {
+    "name": "socks",
+    "version": "2.8.10"
+  },
+  {
+    "name": "socks-proxy-agent",
+    "version": "8.0.5"
+  },
+  {
+    "name": "spdx-exceptions",
+    "version": "2.5.0"
+  },
+  {
+    "name": "spdx-expression-parse",
+    "version": "4.0.0"
+  },
+  {
+    "name": "spdx-license-ids",
+    "version": "3.0.24"
+  },
+  {
+    "name": "ssri",
+    "version": "13.0.1"
+  },
+  {
+    "name": "supports-color",
+    "version": "10.2.2"
+  },
+  {
+    "name": "tar",
+    "version": "7.5.22"
+  },
+  {
+    "name": "text-table",
+    "version": "0.2.0"
+  },
+  {
+    "name": "tiny-relative-date",
+    "version": "2.0.2"
+  },
+  {
+    "name": "tinyglobby",
+    "version": "0.2.17"
+  },
+  {
+    "name": "treeverse",
+    "version": "3.0.0"
+  },
+  {
+    "name": "tuf-js",
+    "version": "4.1.0"
+  },
+  {
+    "name": "undici",
+    "version": "6.29.1"
+  },
+  {
+    "name": "util-deprecate",
+    "version": "1.0.2"
+  },
+  {
+    "name": "validate-npm-package-name",
+    "version": "7.0.2"
+  },
+  {
+    "name": "walk-up-path",
+    "version": "4.0.0"
+  },
+  {
+    "name": "which",
+    "version": "6.0.1"
+  },
+  {
+    "name": "write-file-atomic",
+    "version": "7.0.1"
+  },
+  {
+    "name": "yallist",
+    "version": "4.0.0"
+  },
+  {
+    "name": "yallist",
+    "version": "5.0.0"
+  }
+]

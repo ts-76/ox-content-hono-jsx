@@ -37,12 +37,19 @@ await cp(join(repo, "examples", example), app, {
   recursive: true,
   filter: (p) => !p.includes("/node_modules") && !p.includes("/dist"),
 });
-const [packed] = JSON.parse(
-  run(["pack", "--ignore-scripts", "--json", "--pack-destination", root], repo),
-);
+const publicPackage = process.env.OX_HONO_PACKAGE;
+let packageSource = publicPackage;
+if (!packageSource) {
+  const [packed] = JSON.parse(
+    run(
+      ["pack", "--ignore-scripts", "--json", "--pack-destination", root],
+      repo,
+    ),
+  );
+  packageSource = "file:" + join(root, packed.filename);
+}
 const manifest = JSON.parse(await readFile(join(app, "package.json"), "utf8"));
-manifest.dependencies["@ts-76/ox-content-hono-jsx"] =
-  "file:" + join(root, packed.filename);
+manifest.dependencies["@ts-76/ox-content-hono-jsx"] = packageSource;
 await writeFile(join(app, "package.json"), JSON.stringify(manifest, null, 2));
 console.log("Consumer:", app);
 run(["install", "--ignore-scripts", "--omit=peer", "--no-audit", "--no-fund"]);
@@ -162,7 +169,8 @@ export default defineConfig({plugins: [oxContentHono({routes:false, frontmatter:
 }
 const evidence = {
   root,
-  packed: true,
+  packed: !publicPackage,
+  publicPackage: publicPackage ?? null,
   sourceLinks: false,
   initialBuild: true,
   browserInputs: Object.keys(graph.metafile.inputs).length,

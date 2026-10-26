@@ -1,7 +1,7 @@
 {
   "name": "@ts-76/ox-content-hono-jsx",
   "version": "0.1.0",
-  "description": "Independent Hono JSX adapters for Ox Content HTML hosts",
+  "description": "Hono JSX integration for Ox Content: Markdown components, SSR and islands",
   "license": "MIT",
   "files": [
     "dist",
@@ -63,5 +63,26 @@
   },
   "engines": {
     "node": ">=22.22.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ts-76/ox-content-hono-jsx.git"
+  },
+  "homepage": "https://github.com/ts-76/ox-content-hono-jsx#readme",
+  "bugs": {
+    "url": "https://github.com/ts-76/ox-content-hono-jsx/issues"
+  },
+  "keywords": [
+    "ox-content",
+    "hono",
+    "jsx",
+    "markdown",
+    "mdx",
+    "vite",
+    "islands"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }

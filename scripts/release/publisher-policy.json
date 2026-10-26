@@ -1,0 +1,20 @@
+{
+  "schema": 3,
+  "manager": "npm",
+  "version": "11.21.1",
+  "node": "24.22.1",
+  "target": "linux-x64",
+  "sourceCommit": "8834421d14085fdf6e871e6f3a20f6ae1b3de599",
+  "lockSha256": "325bc8dce1394843ec861c1004999bbabfa94ce041e21558d733d252cf7cfee0",
+  "inventorySha256": "bca8ddfc4eb5b124fea32a2729f977b8a2ceb6fc3c044c2633a0bebab9697545",
+  "filesSha256": "735e82cb9fc7166e6cc33c5e284ac8ebbde5dc2baaf00e0d09765aeb920d9543",
+  "distribution": {
+    "name": "npm",
+    "url": "https://registry.npmjs.org/npm/-/npm-11.21.1.tgz",
+    "integrity": "sha512-YTzL6QBEJXyHcTu0JiUc7RKMp+mzlJtl7rGLmERaXUQeFHIMc9atdr6G9M9C8vDWbv40epoTQAzNL2/PtZVDhQ==",
+    "entry": "bin/npm-cli.js",
+    "entrySha256": "8e5f6f3429f8cdbe693cdc29904e9d5a7b127a494bd15c804bd54c7403bfcbe7"
+  },
+  "acceptedFindings": [],
+  "scope": "Private npm runtime with integrity-pinned upstream CLI code and fixed dependencies; Node 24.22.1; isolated config/cache; CI signs the exact verified tarball without npm credentials; local owner stages that signed tarball and completes npm 2FA. No directory publication, overrides or lifecycle scripts."
+}
