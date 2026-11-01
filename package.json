@@ -1,6 +1,6 @@
 {
   "name": "@ts-76/ox-content-hono-jsx",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Hono JSX integration for Ox Content: Markdown components, SSR and islands",
   "license": "MIT",
   "files": [
