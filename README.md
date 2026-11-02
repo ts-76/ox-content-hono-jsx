@@ -5,13 +5,13 @@ Markdown / MDX の変換・部品の検出・仮想モジュール・CSS の収�
 このパッケージは Hono JSX の SSR と `hono/jsx/dom` での部品起動・破棄を担当します。
 
 Ox Content とは独立した、非公式の Hono JSX アダプターです。
-Ox Content 3.5.0 / Hono 4.13.16 / Vite 8.3.5 で検証しています。
+Ox Content 3.8.2 / Hono 4.13.16 / Vite 8.3.5 で検証しています。
 
 ## インストール
 
 ```sh
 npm install @ts-76/ox-content-hono-jsx hono
-npm install -D @ox-content/vite-plugin@3.5.0 vite@8.3.5
+npm install -D @ox-content/vite-plugin@3.8.2 vite@8.3.5
 ```
 
 アプリの通常操作は `npm run dev` / `npm run build` / `npm run preview` です。
@@ -283,8 +283,8 @@ export default function Counter({ initial = 0 }) {
 
 ## 上流のビルド用依存の監査
 
-Ox Content 3.5.0 の依存ツリーには、fflate の ZIP64 展開と KaTeX の既存 prototype pollution を前提とした勧告が残ります。
-2026-11-01 の監査表示は伝播分を含め Moderate 5 / Low 2、High / Critical は0です。上流が固定している依存のため、override で差し替えていません。
+Ox Content 3.8.2 の依存ツリーには、fflate の ZIP64 展開と KaTeX の既存 prototype pollution を前提とした勧告が残ります。
+2026-11-03 の監査表示は伝播分を含め Moderate 5 / Low 2、High / Critical は0です。上流が固定している依存のため、override で差し替えていません。
 Satori が使う fflate の API は `inflateSync` で、今回の勧告の対象である `unzipSync` ではありません。
 KaTeX の問題は別の prototype pollution と組み合わさる条件があります。
 ビルド設定・Markdown・部品は信頼できる入力として扱い、CMS の未検証本文を処理する用途には使わないでください。
@@ -298,8 +298,8 @@ KaTeX の問題は別の prototype pollution と組み合わさる条件があ�
 追加で、上流の `glob@13.0.6` と `minimatch@10.2.6` に未承認の指摘があります。
 glob は AbortSignal による中断後もファイル探索を続ける問題で、修正版は14.0.2以降です。
 minimatch は特定のパターンと `optimizationLevel >= 2` による資源消費の問題で、修正版は11.0.1です。
-上流3.5.0の指定はそれぞれ `^13.0.6` / `^10.2.6` で、通常更新では修正版に進めません。
-確認した上流最新版3.8.0でも、この2つの指定は同じです。
+上流3.8.2の指定はそれぞれ `^13.0.6` / `^10.2.6` で、通常更新では修正版に進めません。
+確認した上流最新版3.8.2でも、この2つの指定は同じです。
 `scripts/check-dependencies.mjs` は新しい指摘を引き続き拒否するため、この更新候補の監査CIは停止します。
 これらを許可リストに追加したり、監査条件を緩めたりする変更は含めていません。
 詳細は [glob の勧告](https://github.com/isaacs/node-glob/security/advisories/GHSA-3g3m-2fjr-6pw4) と

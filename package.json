@@ -36,11 +36,11 @@
     "test:consumer": "node scripts/check-consumer.mjs"
   },
   "dependencies": {
-    "@ox-content/islands": "^3.5.0"
+    "@ox-content/islands": "3.8.2"
   },
   "devDependencies": {
-    "@ox-content/napi": "3.5.0",
-    "@ox-content/vite-plugin": "3.5.0",
+    "@ox-content/napi": "3.8.2",
+    "@ox-content/vite-plugin": "3.8.2",
     "@types/node": "^24.0.0",
     "esbuild": "^0.28.2",
     "hono": "4.13.16",
