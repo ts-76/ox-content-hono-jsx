@@ -1,6 +1,6 @@
 {
   "name": "@ts-76/ox-content-hono-jsx",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Hono JSX integration for Ox Content: Markdown components, SSR and islands",
   "license": "MIT",
   "files": [
@@ -36,21 +36,21 @@
     "test:consumer": "node scripts/check-consumer.mjs"
   },
   "dependencies": {
-    "@ox-content/islands": "^3.4.0"
+    "@ox-content/islands": "3.8.2"
   },
   "devDependencies": {
-    "@ox-content/napi": "3.4.0",
-    "@ox-content/vite-plugin": "3.4.0",
+    "@ox-content/napi": "3.8.2",
+    "@ox-content/vite-plugin": "3.8.2",
     "@types/node": "^24.0.0",
     "esbuild": "^0.28.2",
-    "hono": "4.13.13",
-    "playwright": "1.64.0",
+    "hono": "4.13.16",
+    "playwright": "1.64.1",
     "typescript": "^7.0.2",
-    "vite": "8.3.4"
+    "vite": "8.3.5"
   },
   "peerDependencies": {
     "@ox-content/vite-plugin": ">=3.4.0 <4",
-    "hono": ">=4.13.13 <5",
+    "hono": ">=4.13.16 <5",
     "vite": "^8.3.4"
   },
   "peerDependenciesMeta": {

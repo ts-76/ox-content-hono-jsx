@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "packageVersion": "0.1.1",
+  "approvedBy": "ts-76",
+  "approvedOn": "2026-11-03",
+  "scope": "Trusted local development/build input only; no untrusted CMS Markdown, patterns, archives or components. This acceptance is specific to Ox Content 3.8.2 and this exact lockfile, not runtime exposure or an audit-zero claim.",
+  "lockSha256": "f534dce402c2a26421f6ba7e1d0ee9e88051e79615da55b06fa51d0eb286980f",
+  "oxVersion": "3.8.2",
+  "affectedPackages": [
+    "@ox-content/vite-plugin",
+    "fflate",
+    "glob",
+    "katex",
+    "mermaid",
+    "minimatch",
+    "satori"
+  ],
+  "advisories": [
+    {
+      "id": "GHSA-px8p-9vwx-vf98",
+      "modified": "2026-09-10T03:50:52.758792289Z",
+      "sha256": "2d62329cd3060e252b5246940b20826844e96846064ace4e99ea83d0ccc5cd74"
+    },
+    {
+      "id": "GHSA-238p-pmpm-9mq7",
+      "modified": "2026-10-06T00:00:09.544490390Z",
+      "sha256": "667c2c50e15eb2e8334152eb9db60c3ed90789122309aabdcbd3cec0d57616da"
+    },
+    {
+      "id": "GHSA-3g3m-2fjr-6pw4",
+      "modified": "2026-10-30T23:15:04.503965732Z",
+      "sha256": "6edf5d57639de7d490f68b26caa3414f291369227e0af01474a2615fefeadcbe"
+    },
+    {
+      "id": "GHSA-g3hv-75wg-m249",
+      "modified": "2026-10-30T23:15:07.420159385Z",
+      "sha256": "b95559e204e1aa4f22ee0598c69598d75799ca5545df2f48a8ed44032951d5ba"
+    }
+  ]
+}

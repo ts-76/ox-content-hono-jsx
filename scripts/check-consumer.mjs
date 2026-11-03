@@ -62,7 +62,7 @@ await writeFile(
     type: "module",
     dependencies: {
       "@ts-76/ox-content-hono-jsx": packageSource,
-      hono: "4.13.13",
+      hono: "4.13.16",
     },
   }),
 );
