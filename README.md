@@ -295,13 +295,15 @@ KaTeX の問題は別の prototype pollution と組み合わさる条件があ�
 [fflate](https://github.com/advisories/GHSA-px8p-9vwx-vf98) /
 [KaTeX](https://github.com/advisories/GHSA-238p-pmpm-9mq7) を参照してください。
 
-追加で、上流の `glob@13.0.6` と `minimatch@10.2.6` に未承認の指摘があります。
+追加で、上流の `glob@13.0.6` と `minimatch@10.2.6` に指摘が残ります。
 glob は AbortSignal による中断後もファイル探索を続ける問題で、修正版は14.0.2以降です。
 minimatch は特定のパターンと `optimizationLevel >= 2` による資源消費の問題で、修正版は11.0.1です。
 上流3.8.2の指定はそれぞれ `^13.0.6` / `^10.2.6` で、通常更新では修正版に進めません。
 確認した上流最新版3.8.2でも、この2つの指定は同じです。
-`scripts/check-dependencies.mjs` は新しい指摘を引き続き拒否するため、この更新候補の監査CIは停止します。
-これらを許可リストに追加したり、監査条件を緩めたりする変更は含めていません。
+2026-11-03に所有者が、この0.1.1候補と信頼できるビルド入力の用途に限り、4勧告の残存リスクを受容しました。
+`scripts/dependency-risk.json` はバージョン・上流3.8.2・依存ロック・勧告本文を固定します。
+`scripts/check-dependencies.mjs` は新しい指摘、High/Critical、ロックや勧告の変更を引き続き拒否します。
+監査件数は0ではありません。任意のCMS本文・globパターン・ZIPを処理する用途への受容ではありません。
 詳細は [glob の勧告](https://github.com/isaacs/node-glob/security/advisories/GHSA-3g3m-2fjr-6pw4) と
 [minimatch の勧告](https://github.com/isaacs/minimatch/security/advisories/GHSA-g3hv-75wg-m249) を参照してください。
 

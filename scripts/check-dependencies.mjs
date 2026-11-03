@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { verifyDependencyRisk } from "./dependency-risk.mjs";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 const result = spawnSync("npm", ["audit", "--json", "--ignore-scripts"], {
@@ -6,35 +8,9 @@ const result = spawnSync("npm", ["audit", "--json", "--ignore-scripts"], {
 });
 assert.ok(result.status === 0 || result.status === 1, result.stderr);
 const audit = JSON.parse(result.stdout);
-assert.ok(
-  audit.metadata && audit.vulnerabilities && !audit.error,
-  "Incomplete dependency audit",
-);
-const expected = new Set([
-  "https://github.com/advisories/GHSA-px8p-9vwx-vf98",
-  "https://github.com/advisories/GHSA-238p-pmpm-9mq7",
-]);
-for (const item of Object.values(audit.vulnerabilities)) {
-  assert.ok(
-    [
-      "@ox-content/vite-plugin",
-      "fflate",
-      "katex",
-      "mermaid",
-      "satori",
-    ].includes(item.name),
-    `New affected dependency: ${item.name}`,
-  );
-  for (const via of item.via)
-    if (typeof via === "object")
-      assert.ok(expected.has(via.url), `Unreviewed advisory: ${via.url}`);
-}
-assert.equal(audit.metadata.vulnerabilities.high, 0);
-assert.equal(audit.metadata.vulnerabilities.critical, 0);
-console.log(
-  JSON.stringify({
-    scope: "development/build dependencies; see README",
-    counts: audit.metadata.vulnerabilities,
-    knownAdvisories: [...expected],
-  }),
-);
+console.log(JSON.stringify(await verifyDependencyRisk({
+  pkg: JSON.parse(readFileSync("package.json")),
+  lockBytes: readFileSync("package-lock.json"),
+  audit,
+  policy: JSON.parse(readFileSync(new URL("./dependency-risk.json", import.meta.url))),
+})));
