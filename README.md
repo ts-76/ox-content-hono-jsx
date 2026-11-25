@@ -1,11 +1,90 @@
 # Ox Content Hono JSX adapter
 
+**このパッケージは非推奨です。** プラグインは [Ox Content](https://github.com/ubugeeei-prod/ox-content) に移管され、[`@ox-content/vite-plugin-hono@3.10.0`](https://www.npmjs.com/package/@ox-content/vite-plugin-hono/v/3.10.0) として正式公開されています。新しい開発には公式パッケージを使ってください。切り替え方は下の [移行案内](#移行案内) を参照してください。
+
 Ox Content の HTML host API を Hono JSX に接続する独立パッケージです。
 Markdown / MDX の変換・部品の検出・仮想モジュール・CSS の収集・HMR は Ox Content に任せ、
 このパッケージは Hono JSX の SSR と `hono/jsx/dom` での部品起動・破棄を担当します。
 
-Ox Content とは独立した、非公式の Hono JSX アダプターです。
+0.1.1 は Ox Content とは独立した非公式アダプターとして公開していました。現在の公式パッケージは `@ox-content/vite-plugin-hono` です。
 Ox Content 3.8.2 / Hono 4.13.16 / Vite 8.3.5 で検証しています。
+
+## 移行案内
+
+`@ts-76/ox-content-hono-jsx` の開発は終了し、後継は [`@ox-content/vite-plugin-hono@3.10.0`](https://www.npmjs.com/package/@ox-content/vite-plugin-hono/v/3.10.0) です。公開 API の名前（`oxContentHono` / `honoJsx` / `renderHonoMarkdown` / `createHonoRenderer` / `createHonoServerAdapter` / `createHonoHydrate` / `initHonoIslands` / `FrontmatterContext` / `useFrontmatter`）とオプション名（`oxContent` / `components` / `frontmatter` / `layout` / `routes`）は変わっていません。仮想モジュール ID（`virtual:ox-content-hono/client` と `virtual:ox-content-hono/modules`）もそのまま使えます。アプリ側で変えるのはパッケージ名と import パス、および peer dependency です。
+
+取り込み元は [ubugeeei-prod/ox-content#1591](https://github.com/ubugeeei-prod/ox-content/pull/1591) です。詳しい使い方は [公式パッケージの説明](https://github.com/ubugeeei-prod/ox-content/blob/v3.10.0/docs/content/packages/vite-plugin-ox-content-hono.md) を参照してください。
+
+### インストール
+
+```sh
+# 変更前
+npm install @ts-76/ox-content-hono-jsx hono
+npm install -D @ox-content/vite-plugin@3.8.2 vite@8.3.5
+
+# 変更後
+npm install @ox-content/vite-plugin-hono hono
+npm install -D @ox-content/vite-plugin@^3.10.0 vite
+```
+
+公式パッケージ 3.10.0 の peer は `hono` `>=4.13.16 <5`、`@ox-content/vite-plugin` `^3.10.0`、`vite` `^0.2.8 || ^8.0.0` です。`@ox-content/vite-plugin` は 3.8.2 のままでは使えません。
+
+### import の置き換え
+
+`@ts-76/ox-content-hono-jsx` を `@ox-content/vite-plugin-hono` に置き換えます。エントリー（`/` / `/vite` / `/client` / `/server` / `/virtual`）は同じです。
+
+```ts
+// 変更前
+import { oxContentHono } from "@ts-76/ox-content-hono-jsx/vite";
+import { honoJsx, renderHonoMarkdown } from "@ts-76/ox-content-hono-jsx/vite";
+import { initHonoIslands } from "@ts-76/ox-content-hono-jsx/client";
+import { useFrontmatter } from "@ts-76/ox-content-hono-jsx";
+/// <reference types="@ts-76/ox-content-hono-jsx/virtual" />
+
+// 変更後
+import { oxContentHono } from "@ox-content/vite-plugin-hono/vite";
+import { honoJsx, renderHonoMarkdown } from "@ox-content/vite-plugin-hono/vite";
+import { initHonoIslands } from "@ox-content/vite-plugin-hono/client";
+import { useFrontmatter } from "@ox-content/vite-plugin-hono";
+/// <reference types="@ox-content/vite-plugin-hono/virtual" />
+```
+
+```ts
+// 変更前
+import { defineConfig } from "vite";
+import { oxContentHono } from "@ts-76/ox-content-hono-jsx/vite";
+
+export default defineConfig({
+  plugins: [
+    oxContentHono({
+      oxContent: { srcDir: "content" },
+      frontmatter: ({ title }) => ({ title: title ?? "" }),
+    }),
+  ],
+});
+
+// 変更後
+import { defineConfig } from "vite";
+import { oxContentHono } from "@ox-content/vite-plugin-hono/vite";
+
+export default defineConfig({
+  plugins: [
+    oxContentHono({
+      oxContent: { srcDir: "content" },
+      frontmatter: ({ title }) => ({ title: title ?? "" }),
+    }),
+  ],
+});
+```
+
+### 動作の差
+
+公開オプションの改名や削除はありません。ソースで確認できた差は次のとおりです。
+
+- `oxContent.publishState` を有効にしている場合、公式パッケージは本番ビルドのルートと island registry に publish-state の規則を適用します。0.1.1 はこのフィルタを入れていませんでした。開発サーバーでは下書きは引き続き表示されます。プレビューに下書きを含めたいときは、`publishState.includeDrafts: true` でビルドしてください。
+- Markdown コンポーネントの slot 内にある入れ子の island は、親が mount したあとに子の起動条件が始まります。
+
+以下は 0.1.1 時点の説明です。新しいプロジェクトでは公式パッケージの説明を優先してください。
 
 ## インストール
 
